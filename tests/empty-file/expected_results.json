@@ -1,5 +1,7 @@
 {
   "version": 1,
-  "status": "fail",
-  "message": "TODO: replace with correct output"
+  "status": "error",
+  "message": "/opt/test-runner/tests/empty-file/test.exw:20
+      test_equal(leap(year),expected,desc)
+                 ^ undefined identifier leap"
 }

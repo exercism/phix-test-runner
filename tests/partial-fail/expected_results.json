@@ -1,5 +1,5 @@
 {
   "version": 1,
   "status": "fail",
-  "message": "TODO: replace with correct output"
+  "message": "failed: year divisible by 100, not divisible by 400 in common year: 1 should equal 0"
 }
