@@ -30,7 +30,6 @@ for test_dir in tests/*; do
     echo "${test_dir_name}: comparing ${file} to ${expected_file}"
 
     if ! diff -w "${test_dir_path}/${file}" "${test_dir_path}/${expected_file}"; then
-#       echo "exit_code set to 1"
         exit_code=1
     fi
 done
