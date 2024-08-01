@@ -29,7 +29,7 @@ for test_dir in tests/*; do
     expected_file="expected_${file}"
     echo "${test_dir_name}: comparing ${file} to ${expected_file}"
 
-    if ! diff "${test_dir_path}/${file}" "${test_dir_path}/${expected_file}"; then
+    if ! diff -w "${test_dir_path}/${file}" "${test_dir_path}/${expected_file}"; then
         exit_code=1
     fi
 done

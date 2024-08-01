@@ -1,5 +1,7 @@
 {
   "version": 1,
   "status": "error",
-  "message": "TODO: replace with correct output"
+  "message": "/opt/test-runner/tests/syntax-error/leap.e:1
+global function leap[integer year]
+                    ^ '(' expected"
 }
