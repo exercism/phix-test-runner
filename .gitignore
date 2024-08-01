@@ -1,7 +1,7 @@
 /tests/**/*/results.json
+/bin/backup
 /tests/all-fail/backup
 /tests/empty-file/backup
 /tests/partial-fail/backup
 /tests/success/backup
 /tests/syntax-error/backup
-/bin/backup
