@@ -15,8 +15,8 @@ constant canonical_data = {
 --</do not edit>
 
 set_test_verbosity(TEST_SHOW_ALL)
-for t in canonical_data do
-    {integer year, bool expected, string desc} = t
+for test_case in canonical_data do
+    {integer year, bool expected, string desc} = test_case
     test_equal(leap(year),expected,desc)
 end for
 test_summary() 
