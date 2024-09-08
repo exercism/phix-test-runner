@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "error",
+  "status": "fail",
   "message": "/opt/test-runner/tests/syntax-error/leap.e:1
 global function leap[integer year]
                     ^ '(' expected"
