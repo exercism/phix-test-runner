@@ -22,6 +22,9 @@ procedure process()
     if not file_exists(out_dir) then
         assert(create_directory(out_dir),"cannot create directory "&out_dir)
     end if
+    if file_exists(res_file) then
+        assert(delete_file(res_file),"cannot delete "&res_file)
+    end if
 
 --  printf(1, "%s: testing...\n", {slug})
 
@@ -32,55 +35,57 @@ procedure process()
     integer res = system_exec(cmd,4) -- (4 === result/wait and redirect/builtin)
 --?res
 
-    sequence lines = get_text(res_file,GT_LF_STRIPPED)
+    object lines = get_text(res_file,GT_LF_STRIPPED)
 --?lines
-    
     string status = "pass", message = ""
-
---printf(1,"DATA:\n%s\n",{join(lines,"<\n")})
-    integer begins_hat = 0, begins_3 = 0, crashmsg = false
-    for i,l in lines do
-        if begins_hat=0
-        and begins("^",trim_head(l)) then
-            begins_hat = i
-        elsif begins("... called from ",l)
-          or begins("...included by ",l)
-         or begins("Global & Local Variables",l) then
-            begins_3 = i-1
-            exit
-        elsif match("passed: ",l) then
-            lines[i] = ""
-        elsif i=5 and begins("--> see ",l) then
-            crashmsg = true
-            exit
-        end if
-    end for
-    if crashmsg then
+    if atom(lines) then
         status = "error"
-        message = lines[3]
-    elsif begins_3
-       or begins_hat then
-        -- compilation error
-        status = "error"
-        if begins_3=0 then begins_3 = begins_hat end if
-        -- We might want to limit this to, say, 8 lines?
-        message = join(filter(lines[2..begins_3],"!=",""),'\n')
     else
-        -- check for unit test errors or success
-        integer first_failure = 0
-        lines = filter(lines,"!=","")
+--printf(1,"DATA:\n%s\n",{join(lines,"<\n")})
+        integer begins_hat = 0, begins_3 = 0, crashmsg = false
         for i,l in lines do
-            if match("100% success", l) then exit end if // all good
-            if match("% success", l) then // < 100% then...
-                status = "fail"
-                if first_failure==0 then first_failure = i end if
-                message = trim(lines[first_failure])
+            if begins_hat=0
+            and begins("^",trim_head(l)) then
+                begins_hat = i
+            elsif begins("... called from ",l)
+              or begins("...included by ",l)
+             or begins("Global & Local Variables",l) then
+                begins_3 = i-1
+                exit
+            elsif match("passed: ",l) then
+                lines[i] = ""
+            elsif i=5 and begins("--> see ",l) then
+                crashmsg = true
                 exit
             end if
-            if first_failure==0 and match("failed:", l) then
-                first_failure = i
-            end if
         end for
+        if crashmsg then
+            status = "fail"
+            message = lines[3]
+        elsif begins_3
+           or begins_hat then
+            -- compilation error
+            status = "fail"
+            if begins_3=0 then begins_3 = begins_hat end if
+            -- We might want to limit this to, say, 8 lines?
+            message = join(filter(lines[2..begins_3],"!=",""),'\n')
+        else
+            -- check for unit test errors or success
+            integer first_failure = 0
+            lines = filter(lines,"!=","")
+            for i,l in lines do
+                if match("100% success", l) then exit end if // all good
+                if match("% success", l) then // < 100% then...
+                    status = "fail"
+                    if first_failure==0 then first_failure = i end if
+                    message = trim(lines[first_failure])
+                    exit
+                end if
+                if first_failure==0 and match("failed:", l) then
+                    first_failure = i
+                end if
+            end for
+        end if
     end if
     // if status is still "pass" then res //must// be 0, shirley:
     assert(status!="pass" or res==0,"pass with res=%d??",{res})
