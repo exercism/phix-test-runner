@@ -30,14 +30,13 @@ procedure process()
 
     assert(chdir(sol_dir),"cannot chdir to %s",{sol_dir})
     string cmd = sprintf(`p -nopause %s > "%s" 2>&1`, {test_src, res_file})
---?cmd
 
     integer res = system_exec(cmd,4) -- (4 === result/wait and redirect/builtin)
---?res
 
     object lines = get_text(res_file,GT_LF_STRIPPED)
---?lines
+
     string status = "pass", message = ""
+
     if atom(lines) then
         status = "error"
     else
@@ -87,18 +86,17 @@ procedure process()
             end for
         end if
     end if
+
     // if status is still "pass" then res //must// be 0, shirley:
     assert(status!="pass" or res==0,"pass with res=%d??",{res})
     
+--19/1/25: bit of a hack, in 1.0.6 print_json() will do this automatically if rqd
+    message = substitute(message,'"',`\"`)
     sequence json = {JSON_OBJECT, {"version", 1}, {"status", status}, {"message", message}}
     integer ofn = open(res_file,"w")
     object pjres = print_json(ofn, json) -- (separate line so available for debugging)
     assert(pjres!=0,"bad json??")
     close(ofn)
---temp:
---{} = print_json(1,json)
---?{res,status}
---  if res!=0 then crash(status) end if
 
 end procedure
 
