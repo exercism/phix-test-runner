@@ -5,8 +5,8 @@ ARG PHIX_VERSION=1.0.5a
 RUN apt-get update && apt-get install --yes --no-install-recommends ca-certificates wget unzip
 
 RUN zipname="phix.${PHIX_VERSION}.zip" && \
-    wget "http://phix.x10.mx/p64" && \
-    wget "http://phix.x10.mx/${zipname}" && \
+    wget "https://phix.x10.mx/p64" && \
+    wget "https://phix.x10.mx/${zipname}" && \
     mv p64 p && \
     chmod 777 p && \
     mv p /usr/local/bin/p && \
